@@ -2,6 +2,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
+const async = require('async');
 const { body, validationResult } = require('express-validator');
 const BookInstance = require('../models/bookinstance');
 const Book = require('../models/book');
@@ -89,8 +90,16 @@ exports.bookinstance_create_post = [
 ];
 
 // Display BookInstance delete form on GET.
-exports.bookinstance_delete_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: BookInstance delete GET');
+exports.bookinstance_delete_get = function (req, res, next) {
+  BookInstance.findById(req.params.id)
+    .populate('book')
+    .exec((err, bookinstance) => {
+      if (err) { return next(err); }
+      if (bookinstance == null) {
+        res.redirect('/catalog/bookinstances');
+      }
+      res.render('bookinstance_delete', { title: `Copy: ${bookinstance.book.title}`, bookinstance });
+    });
 };
 
 // Handle BookInstance delete on POST.
