@@ -217,9 +217,9 @@ exports.book_update_get = function (req, res, next) {
   }, (err, results) => {
     if (err) { return next(err); }
     if (results.book == null) { // No results.
-      var err = new Error('Book not found');
-      err.status = 404;
-      return next(err);
+      const error = new Error('Book not found');
+      error.status = 404;
+      return next(error);
     }
     // Success.
     // Mark our selected genres as checked.
